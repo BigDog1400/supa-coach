@@ -10,11 +10,11 @@ const config = {
 
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: [
-    "@acme/api",
-    "@acme/auth",
-    "@acme/db",
-    "@acme/ui",
-    "@acme/validators",
+    "@supa-coach/api",
+    "@supa-coach/auth",
+    "@supa-coach/db",
+    "@supa-coach/ui",
+    "@supa-coach/validators",
   ],
 
   /** We already do linting and typechecking as separate tasks in CI */

@@ -7,8 +7,24 @@ import { skipCSRFCheck } from "@auth/core";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Discord from "next-auth/providers/discord";
 
-import { db } from "@acme/db/client";
-import { Account, Session, User } from "@acme/db/schema";
+import { db } from "@supa-coach/db/client";
+import {
+  Account,
+  AccountRelations,
+  AuditLogs,
+  Genders,
+  Media,
+  Notifications,
+  Profile,
+  ProgressLogs,
+  ProgressMetrics,
+  Roles,
+  Session,
+  SessionRelations,
+  User,
+  UserRelations,
+  UserRoles,
+} from "@supa-coach/db/schema";
 
 import { env } from "../env";
 
@@ -24,6 +40,13 @@ const adapter = DrizzleAdapter(db, {
   usersTable: User,
   accountsTable: Account,
   sessionsTable: Session,
+  usersTable: User,
+  rolesTable: Roles,
+  userRolesTable: UserRoles,
+  auditLogsTable: AuditLogs,
+  gendersTable: Genders,
+  mediaTable: Media,
+  notificationsTable: Notifications,
 });
 
 export const isSecureContext = env.NODE_ENV !== "development";
