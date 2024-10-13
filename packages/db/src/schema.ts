@@ -13,12 +13,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
-
-// export enum UserType {
-//   COACH = 'coach',
-//   CLIENT = 'client',
-// }
 
 const userTypes = ["coach", "client"] as const;
 export type UserType = (typeof userTypes)[number];
@@ -187,6 +181,12 @@ export const WorkoutPlan = pgTable("workout_plan", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const CreateWorkoutPlanSchema = createInsertSchema(WorkoutPlan).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const WorkoutPlanRelations = relations(WorkoutPlan, ({ one, many }) => ({
   coach: one(User, { fields: [WorkoutPlan.coachId], references: [User.id] }),
   client: one(User, { fields: [WorkoutPlan.clientId], references: [User.id] }),
@@ -285,6 +285,12 @@ export const WorkoutLog = pgTable("workout_log", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const CreateWorkoutLogSchema = createInsertSchema(WorkoutLog).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const WorkoutLogRelations = relations(WorkoutLog, ({ one, many }) => ({
   client: one(User, { fields: [WorkoutLog.clientId], references: [User.id] }),
   workoutSession: one(WorkoutSession, {
@@ -334,6 +340,8 @@ export const ProgressLog = pgTable("progress_log", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const CreateProgressLogSchema = createInsertSchema(ProgressLog);
 
 export const ProgressLogRelations = relations(ProgressLog, ({ one }) => ({
   client: one(User, { fields: [ProgressLog.clientId], references: [User.id] }),
