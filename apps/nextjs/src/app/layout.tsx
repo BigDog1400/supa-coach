@@ -10,6 +10,9 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
+import { auth } from "@supa-coach/auth";
+
+import Providers from "~/components/layout/providers";
 import { env } from "~/env";
 
 export const metadata: Metadata = {
@@ -40,7 +43,9 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const session = await auth();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -50,13 +55,15 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           GeistMono.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>{props.children}</TRPCReactProvider>
-          <div className="absolute bottom-4 right-4">
-            <ThemeToggle />
-          </div>
-          <Toaster />
-        </ThemeProvider>
+        <Providers session={session}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TRPCReactProvider>{props.children}</TRPCReactProvider>
+            <div className="absolute bottom-4 right-4">
+              <ThemeToggle />
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

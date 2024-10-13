@@ -52,7 +52,7 @@ export const User = pgTable("user", {
     withTimezone: true,
   }),
   image: varchar("image", { length: 255 }),
-  userType: text("user_type", { enum: userTypes }).notNull(),
+  userType: text("user_type", { enum: userTypes }).default("client"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

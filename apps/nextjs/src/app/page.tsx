@@ -12,7 +12,7 @@ export const runtime = "edge";
 
 export default function HomePage() {
   // You can await this here if you don't want to show Suspense fallback below
-  void api.post.all.prefetch();
+  // void api.post.all.prefetch();
 
   return (
     <HydrateClient>
