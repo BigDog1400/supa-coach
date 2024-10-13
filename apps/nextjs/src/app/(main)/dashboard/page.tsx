@@ -1,11 +1,24 @@
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
+import Dashboard from "~/components/dashboard";
+import PageContainer from "~/components/layout/page-container";
+import { api, HydrateClient } from "~/trpc/server";
+
 export const runtime = "edge";
 
 export default function DashboardPage() {
+  void api.dashboard.getDashboardStats.prefetch();
+
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-        Dashboard
-      </h1>
-    </div>
+    <PageContainer>
+      <HydrateClient>
+        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Dashboard />
+          </Suspense>
+        </ErrorBoundary>
+      </HydrateClient>
+    </PageContainer>
   );
 }
