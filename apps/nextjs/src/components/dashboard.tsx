@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Bell,
   Calendar as CalendarIcon,
   MessageSquare,
   Plus,
+  PlusCircle,
   Users,
 } from "lucide-react";
 
-import { Button } from "@supa-coach/ui/button";
+import { Button, buttonVariants } from "@supa-coach/ui/button";
 import { Calendar } from "@supa-coach/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@supa-coach/ui/card";
 import { Progress } from "@supa-coach/ui/progress";
@@ -26,9 +28,13 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <div className="space-x-2">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Add Client
-          </Button>
+          <Link
+            href="/dashboard/add-client"
+            className={buttonVariants({ variant: "primary" })}
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Client
+          </Link>
           <Button variant="outline">
             <CalendarIcon className="mr-2 h-4 w-4" /> Create Workout
           </Button>

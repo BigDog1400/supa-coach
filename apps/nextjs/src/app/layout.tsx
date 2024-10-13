@@ -4,13 +4,13 @@ import { GeistSans } from "geist/font/sans";
 
 import { cn } from "@supa-coach/ui";
 import { ThemeProvider, ThemeToggle } from "@supa-coach/ui/theme";
-import { Toaster } from "@supa-coach/ui/toast";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
 import { auth } from "@supa-coach/auth";
+import { Toaster } from "@supa-coach/ui/toaster";
 
 import Providers from "~/components/layout/providers";
 import { env } from "~/env";
