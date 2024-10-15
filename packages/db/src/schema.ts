@@ -4,6 +4,7 @@ import {
   date,
   doublePrecision,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -13,6 +14,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 
 const userTypes = ["coach", "client"] as const;
 export type UserType = (typeof userTypes)[number];
@@ -42,6 +44,31 @@ export type Status = (typeof statuses)[number];
 
 const goalStatuses = ["active", "achieved", "abandoned"] as const;
 export type GoalStatus = (typeof goalStatuses)[number];
+
+const invitationStatuses = ["pending", "accepted", "rejected"] as const;
+export type InvitationStatus = (typeof invitationStatuses)[number];
+
+const clientDataSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  phone: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  gender: z.enum(["male", "female", "other", "prefer-not-to-say"]).optional(),
+  height: z.number().positive().optional(),
+  heightUnit: z.enum(["cm", "feet"]),
+  weight: z.number().positive().optional(),
+  weightUnit: z.enum(["kg", "lbs"]),
+  fitnessLevel: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+  fitnessGoals: z.array(z.string()).optional(),
+  preferredWorkoutDays: z.array(z.string()).optional(),
+  preferredWorkoutTime: z.enum(["morning", "afternoon", "evening"]).optional(),
+  medicalConditions: z.string().optional(),
+  dietaryRestrictions: z.string().optional(),
+  additionalNotes: z.string().optional(),
+});
+
+export type ClientData = z.infer<typeof clientDataSchema>;
 
 export const User = pgTable("user", {
   id: uuid("id").notNull().primaryKey().defaultRandom(),
@@ -146,6 +173,7 @@ export const CoachClientRelationship = pgTable("coach_client_relationship", {
   }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  invitationId: uuid("invitation_id").references(() => Invitation.id),
 });
 
 export const CoachClientRelationshipRelations = relations(
@@ -160,6 +188,10 @@ export const CoachClientRelationshipRelations = relations(
       fields: [CoachClientRelationship.clientId],
       references: [User.id],
       relationName: "client",
+    }),
+    invitation: one(Invitation, {
+      fields: [CoachClientRelationship.invitationId],
+      references: [Invitation.id],
     }),
   }),
 );
@@ -188,8 +220,10 @@ export const CreateWorkoutPlanSchema = createInsertSchema(WorkoutPlan).omit({
 });
 
 export const WorkoutPlanRelations = relations(WorkoutPlan, ({ one, many }) => ({
-  coach: one(User, { fields: [WorkoutPlan.coachId], references: [User.id] }),
-  client: one(User, { fields: [WorkoutPlan.clientId], references: [User.id] }),
+  user: one(User, {
+    fields: [WorkoutPlan.coachId, WorkoutPlan.clientId],
+    references: [User.id, User.id],
+  }),
   workoutSessions: many(WorkoutSession),
 }));
 
@@ -388,4 +422,24 @@ export const MessageRelations = relations(Message, ({ one }) => ({
     references: [User.id],
     relationName: "recipient",
   }),
+}));
+
+export const Invitation = pgTable("invitation", {
+  id: uuid("id").notNull().primaryKey().defaultRandom(),
+  coachId: uuid("coach_id")
+    .notNull()
+    .references(() => User.id),
+  email: varchar("email", { length: 255 }).notNull(),
+  status: text("status", { enum: invitationStatuses })
+    .notNull()
+    .default("pending"),
+  token: varchar("token", { length: 255 }).notNull(),
+  clientData: jsonb("client_data").$type<ClientData>(), // Use the ClientData type
+  expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const InvitationRelations = relations(Invitation, ({ one }) => ({
+  coach: one(User, { fields: [Invitation.coachId], references: [User.id] }),
 }));

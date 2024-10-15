@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -35,6 +35,8 @@ import {
 } from "@supa-coach/ui/select";
 import { Textarea } from "@supa-coach/ui/textarea";
 import { useToast } from "@supa-coach/ui/use-toast";
+
+import { api } from "~/trpc/react";
 
 const formSchema = z.object({
   firstName: z
@@ -73,17 +75,35 @@ export default function AddClientForm() {
     },
   });
 
+  const addClientMutation = api.client.addClient.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Invitation Sent Successfully",
+        description:
+          "An invitation has been sent to the client's email address.",
+      });
+      form.reset();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description:
+          error.message || "An error occurred while sending the invitation.",
+        variant: "destructive",
+      });
+    },
+  });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const formattedValues = {
+      ...values,
+      dateOfBirth: values.dateOfBirth
+        ? values.dateOfBirth.toISOString()
+        : undefined,
+    };
+    addClientMutation.mutate(formattedValues);
     setIsSubmitting(false);
-    console.log(values);
-    toast({
-      title: "Client Added Successfully",
-      description: "The new client has been added to your dashboard.",
-    });
-    form.reset();
   }
 
   return (
@@ -519,8 +539,13 @@ export default function AddClientForm() {
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button
+            type="submit"
+            disabled={isSubmitting || addClientMutation.isPending}
+          >
+            {(isSubmitting || addClientMutation.isPending) && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
             Add Client
           </Button>
         </div>
