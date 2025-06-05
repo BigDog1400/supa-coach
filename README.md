@@ -73,6 +73,38 @@ tooling
 
 > In this template, we use `@supa-coach` as a placeholder for package names. As a user, you might want to replace it with your own organization or project name. You can use find-and-replace to change all the instances of `@supa-coach` to something like `@my-company` or `@project-name`.
 
+## Features
+
+This application is a comprehensive fitness coaching platform designed to connect coaches and clients, enabling personalized workout planning, progress tracking, and communication.
+
+Key features include:
+
+*   **User Management:**
+    *   Separate registration and dashboards for **Coaches** and **Clients**.
+    *   Detailed user profiles including personal information, fitness levels, and goals.
+*   **Coach-Client Interaction:**
+    *   Coaches can invite and manage their roster of clients.
+    *   Clients can connect with coaches to receive personalized training.
+    *   Secure relationship management with pending, active, or terminated statuses.
+*   **Customizable Workout Planning:**
+    *   Coaches can create tailored workout plans with specific start/end dates and overall duration.
+    *   Plans are composed of daily or weekly workout sessions.
+*   **Rich Exercise Library:**
+    *   Access to a predefined library of exercises.
+    *   Exercises are categorized (e.g., strength, cardio, flexibility) and include details like difficulty, equipment needed, and targeted muscles.
+    *   Coaches can assign specific exercises to workout sessions, detailing sets, reps, duration, and rest times.
+*   **Client Workout Logging:**
+    *   Clients can easily log their completed workout sessions.
+    *   Track status (completed, partially completed, missed) and add notes for each session.
+    *   Detailed logging for individual exercises, including sets/reps achieved, duration, and weight used.
+*   **Progress Monitoring:**
+    *   Clients can record and monitor their physical progress over time, including metrics like weight and body fat percentage.
+*   **Goal Setting & Tracking:**
+    *   Clients can define personal fitness goals with target dates.
+    *   Track the status of goals (active, achieved, abandoned) to stay motivated.
+*   **In-App Messaging:**
+    *   Seamless communication between coaches and clients directly within the platform.
+
 ## Quick Start
 
 > **Note**
