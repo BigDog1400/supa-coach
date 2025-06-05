@@ -39,9 +39,7 @@ export const clientRouter = createTRPCRouter({
         email: z.string().email(),
         phone: z.string().optional(),
         dateOfBirth: z.string().optional(),
-        gender: z
-          .enum(["male", "female", "other", "prefer-not-to-say"])
-          .optional(),
+        gender: z.enum(["male", "female", "other"]).optional(),
         height: z.number().positive().optional(),
         heightUnit: z.enum(["cm", "feet"]),
         weight: z.number().positive().optional(),
@@ -148,7 +146,7 @@ export const clientRouter = createTRPCRouter({
 
       const clientData = invitation.clientData as ClientData;
 
-      // Create user and profile using the stored clientData
+      // Create user
       const newUser = await ctx.db
         .insert(User)
         .values({
@@ -160,8 +158,11 @@ export const clientRouter = createTRPCRouter({
 
       await ctx.db.insert(Profile).values({
         userId: newUser[0]!.id,
-
-        // ... other fields from invitation.clientData
+        dateOfBirth: clientData.dateOfBirth ? clientData.dateOfBirth : null,
+        gender: clientData.gender,
+        height: clientData.height,
+        weight: clientData.weight,
+        fitnessLevel: clientData.fitnessLevel,
       });
 
       // Create coach-client relationship
@@ -169,6 +170,7 @@ export const clientRouter = createTRPCRouter({
         coachId: invitation.coachId,
         clientId: newUser[0]!.id,
         status: "active",
+        invitationId: invitation.id,
       });
 
       // Update invitation status
@@ -177,6 +179,9 @@ export const clientRouter = createTRPCRouter({
         .set({ status: "accepted" })
         .where(eq(Invitation.id, invitation.id));
 
-      return { success: true };
+      // You might want to create initial records for other tables here
+      // For example, creating initial goals based on clientData.fitnessGoals
+
+      return { success: true, userId: newUser[0]!.id };
     }),
 });

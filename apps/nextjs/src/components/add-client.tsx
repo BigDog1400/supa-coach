@@ -48,7 +48,7 @@ const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().optional(),
   dateOfBirth: z.date().optional(),
-  gender: z.enum(["male", "female", "other", "prefer-not-to-say"]).optional(),
+  gender: z.enum(["male", "female", "other"]).optional(),
   height: z.number().positive().optional(),
   heightUnit: z.enum(["cm", "feet"]),
   weight: z.number().positive().optional(),
@@ -233,9 +233,6 @@ export default function AddClientForm() {
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
-                    <SelectItem value="prefer-not-to-say">
-                      Prefer not to say
-                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

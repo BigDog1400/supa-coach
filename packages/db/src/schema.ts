@@ -54,7 +54,7 @@ const clientDataSchema = z.object({
   email: z.string().email(),
   phone: z.string().optional(),
   dateOfBirth: z.string().optional(),
-  gender: z.enum(["male", "female", "other", "prefer-not-to-say"]).optional(),
+  gender: z.enum(["male", "female", "other"]).optional(),
   height: z.number().positive().optional(),
   heightUnit: z.enum(["cm", "feet"]),
   weight: z.number().positive().optional(),

@@ -23,7 +23,6 @@
     "@supa-coach/db": "workspace:*",
     "@supa-coach/validators": "workspace:*",
     "@trpc/server": "catalog:",
-    "@types/uuid": "^10.0.0",
     "resend": "^4.0.0",
     "superjson": "2.2.1",
     "uuid": "^10.0.0",
@@ -33,6 +32,7 @@
     "@supa-coach/eslint-config": "workspace:*",
     "@supa-coach/prettier-config": "workspace:*",
     "@supa-coach/tsconfig": "workspace:*",
+    "@types/uuid": "^10.0.0",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"

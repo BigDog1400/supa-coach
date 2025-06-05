@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { Suspense, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
+import PageContainer from "~/components/layout/page-container";
 import { api } from "~/trpc/react";
+import { HydrateClient } from "~/trpc/server";
 
-export default function AcceptInvitation() {
+function AcceptInvitation() {
+  const params = useParams();
   const router = useRouter();
-  const { token } = router.query;
+  const token = params?.token;
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,6 +18,7 @@ export default function AcceptInvitation() {
       router.push("/login");
     },
     onError: (error) => {
+      setIsLoading(false);
       setError(
         error.message || "An error occurred while accepting the invitation.",
       );
@@ -28,12 +32,26 @@ export default function AcceptInvitation() {
   }, [token]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Processing invitation...</div>;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  return <div>Accepting invitation...</div>;
+  return (
+    <div>Invitation accepted successfully. Redirecting to dashboard...</div>
+  );
+}
+
+export const runtime = "edge";
+
+export default function AddClientPage() {
+  return (
+    <PageContainer>
+      <HydrateClient>
+        <AcceptInvitation />
+      </HydrateClient>
+    </PageContainer>
+  );
 }
